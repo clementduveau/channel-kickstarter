@@ -1,9 +1,0 @@
-apiVersion: release-notes/v2
-kind: bug-fix
-area: istioctl
-issue:
-  - 56558
-
-releaseNotes:
-- |
-  **Fixed** `create-remote-secret` no longer creates redundant rbac resources.

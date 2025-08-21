@@ -1,5 +1,0 @@
-spec:
-  values:
-    pdb:
-      minAvailable: 1
-      unhealthyPodEvictionPolicy: AlwaysAllow

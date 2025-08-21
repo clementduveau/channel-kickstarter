@@ -1,2 +1,0 @@
-add table inet inet-table
-add chain inet inet-table test-chain

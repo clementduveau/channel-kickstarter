@@ -1,3 +1,0 @@
-add table inet inet-table
-add chain inet inet-table test-chain
-add rule inet inet-table test-chain ip daddr 127.0.0.1 return
