@@ -32,5 +32,5 @@ docker build --build-arg service_version=v1 -t ${BOOKINFO_HUB}/examples-bookinfo
 docker push ${BOOKINFO_HUB}/examples-bookinfo-ratings-v1:${BOOKINFO_TAG}
 
 # Update image references in the yaml file
-cp ~channel-kickstarter/bookinfo/platform/kube/bookinfo.yaml ~channel-kickstarter/bookinfo/platform/kube/bookinfo-custom-images.yaml
+cp ~channel-kickstarter/bookinfo.yaml ~channel-kickstarter/bookinfo-custom-images.yaml
 sed -i.bak "s#image:.*\\(\\/examples-bookinfo-.*\\):.*#image: ${h//\//\\/}\\1:$t#g" ~channel-kickstarter/bookinfo/platform/kube/bookinfo-custom-images.yaml
