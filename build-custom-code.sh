@@ -6,31 +6,32 @@ h="${BOOKINFO_HUB:?BOOKINFO_HUB must be set}"
 t="${BOOKINFO_TAG:?BOOKINFO_TAG must be set}"
 
 # Build all images using docker build (without buildx)
+docker-credential-gcr configure-docker --registries=us-docker.pkg.dev
 
 # Build productpage v1
-docker build -t ${BOOKINFO_HUB}/examples-bookinfo-productpage-v1:${BOOKINFO_TAG} ~channel-kickstarter/bookinfo/src/productpage
+docker build -t ${BOOKINFO_HUB}/examples-bookinfo-productpage-v1:${BOOKINFO_TAG} ~/channel-kickstarter/bookinfo/src/productpage
 docker push ${BOOKINFO_HUB}/examples-bookinfo-productpage-v1:${BOOKINFO_TAG}
 
 # Build details v1
-docker build --build-arg service_version=v1 -t ${BOOKINFO_HUB}/examples-bookinfo-details-v1:${BOOKINFO_TAG} ~channel-kickstarter/bookinfo/src/details
+docker build --build-arg service_version=v1 -t ${BOOKINFO_HUB}/examples-bookinfo-details-v1:${BOOKINFO_TAG} ~/channel-kickstarter/bookinfo/src/details
 docker push ${BOOKINFO_HUB}/examples-bookinfo-details-v1:${BOOKINFO_TAG}
 
 # Build reviews v1
-docker build --build-arg service_version=v1 -t ${BOOKINFO_HUB}/examples-bookinfo-reviews-v1:${BOOKINFO_TAG} ~channel-kickstarter/bookinfo/src/reviews
+docker build --build-arg service_version=v1 -t ${BOOKINFO_HUB}/examples-bookinfo-reviews-v1:${BOOKINFO_TAG} ~/channel-kickstarter/bookinfo/src/reviews
 docker push ${BOOKINFO_HUB}/examples-bookinfo-reviews-v1:${BOOKINFO_TAG}
 
 # Build reviews v2
-docker build --build-arg service_version=v2 --build-arg enable_ratings=true -t ${BOOKINFO_HUB}/examples-bookinfo-reviews-v2:${BOOKINFO_TAG} ~channel-kickstarter/bookinfo/src/reviews
+docker build --build-arg service_version=v2 --build-arg enable_ratings=true -t ${BOOKINFO_HUB}/examples-bookinfo-reviews-v2:${BOOKINFO_TAG} ~/channel-kickstarter/bookinfo/src/reviews
 docker push ${BOOKINFO_HUB}/examples-bookinfo-reviews-v2:${BOOKINFO_TAG}
 
 # Build reviews v3
-docker build --build-arg service_version=v3 --build-arg enable_ratings=true --build-arg star_color=red -t ${BOOKINFO_HUB}/examples-bookinfo-reviews-v3:${BOOKINFO_TAG} ~channel-kickstarter/bookinfo/src/reviews
+docker build --build-arg service_version=v3 --build-arg enable_ratings=true --build-arg star_color=red -t ${BOOKINFO_HUB}/examples-bookinfo-reviews-v3:${BOOKINFO_TAG} ~/channel-kickstarter/bookinfo/src/reviews
 docker push ${BOOKINFO_HUB}/examples-bookinfo-reviews-v3:${BOOKINFO_TAG}
 
 # Build ratings v1
-docker build --build-arg service_version=v1 -t ${BOOKINFO_HUB}/examples-bookinfo-ratings-v1:${BOOKINFO_TAG} ~channel-kickstarter/bookinfo/src/ratings
+docker build --build-arg service_version=v1 -t ${BOOKINFO_HUB}/examples-bookinfo-ratings-v1:${BOOKINFO_TAG} ~/channel-kickstarter/bookinfo/src/ratings
 docker push ${BOOKINFO_HUB}/examples-bookinfo-ratings-v1:${BOOKINFO_TAG}
 
 # Update image references in the yaml file
-cp ~channel-kickstarter/bookinfo/platform/kube/bookinfo.yaml ~channel-kickstarter/bookinfo/platform/kube/bookinfo-custom-images.yaml
-sed -i.bak "s#image:.*\\(\\/examples-bookinfo-.*\\):.*#image: ${h//\//\\/}\\1:$t#g" ~channel-kickstarter/bookinfo/platform/kube/bookinfo-custom-images.yaml
+cp ~/channel-kickstarter/bookinfo.yaml ~/channel-kickstarter/bookinfo-custom-images.yaml
+sed -i.bak "s#image:.*\\(\\/examples-bookinfo-.*\\):.*#image: ${h//\//\\/}\\1:$t#g" ~/channel-kickstarter/bookinfo-custom-images.yaml

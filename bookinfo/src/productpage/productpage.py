@@ -17,11 +17,6 @@
 import time
 from flask import Flask, request, session, render_template, redirect, g
 from json2html import json2html
-from opentelemetry import trace
-from opentelemetry.instrumentation.flask import FlaskInstrumentor
-from opentelemetry.propagate import set_global_textmap
-from opentelemetry.propagators.b3 import B3MultiFormat
-from opentelemetry.sdk.trace import TracerProvider
 from prometheus_client import Counter, generate_latest
 import asyncio
 import logging
@@ -38,7 +33,6 @@ import http.client as http_client
 http_client.HTTPConnection.debuglevel = 0
 
 app = Flask(__name__)
-FlaskInstrumentor().instrument_app(app)
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 requests_log = logging.getLogger("requests.packages.urllib3")
 requests_log.setLevel(logging.INFO)
@@ -102,34 +96,12 @@ request_result_counter = Counter('request_result', 'Results of requests', ['dest
 # incoming request to any outgoing requests. The choice of headers to propagate
 # is determined by the trace configuration used. See getForwardHeaders for
 # the different header options.
-#
-# This example code uses OpenTelemetry (http://opentelemetry.io/) to propagate
-# the 'b3' (zipkin) headers. Using OpenTelemetry for this is not a requirement.
-# Using OpenTelemetry allows you to add application-specific tracing later on,
-# but you can just manually forward the headers if you prefer.
-#
-# The OpenTelemetry example here is very basic. It only forwards headers. It is
-# intended as a reference to help people get started, eg how to create spans,
-# extract/inject context, etc.
-
-
-propagator = B3MultiFormat()
-set_global_textmap(B3MultiFormat())
-provider = TracerProvider()
-# Sets the global default tracer provider
-trace.set_tracer_provider(provider)
-
-tracer = trace.get_tracer(__name__)
 
 
 def getForwardHeaders(request):
     headers = {}
 
-    # x-b3-*** headers can be populated using the OpenTelemetry span
-    ctx = propagator.extract(carrier={k.lower(): v for k, v in request.headers})
-    propagator.inject(headers, ctx)
-
-    # We handle other (non x-b3-***) headers manually
+    # We handle headers manually
     if 'user' in session:
         headers['end-user'] = session['user']
 
@@ -169,12 +141,11 @@ def getForwardHeaders(request):
 
         # b3 trace headers. Compatible with Zipkin, OpenCensusAgent, and
         # Stackdriver Istio configurations.
-        # This is handled by opentelemetry above
-        # 'x-b3-traceid',
-        # 'x-b3-spanid',
-        # 'x-b3-parentspanid',
-        # 'x-b3-sampled',
-        # 'x-b3-flags',
+        'x-b3-traceid',
+        'x-b3-spanid',
+        'x-b3-parentspanid',
+        'x-b3-sampled',
+        'x-b3-flags',
 
         # SkyWalking trace headers.
         'sw8',

@@ -17,7 +17,10 @@ BookInfo got you a dev environment to run your tests. Deploy the app by running 
 ```bash
 git clone https://github.com/clementduveau/channel-kickstarter.git
 cd channel-kickstarter
-kubectl apply -f /bookinfo/platform/kubernetes/bookinfo.yaml
+export HUB="us-docker.pkg.dev/public-field-eng-grafana/${LOGNAME:0:6}-cr"
+export TAG=$LOGNAME
+BOOKINFO_TAG=$TAG BOOKINFO_HUB=$HUB ./build-custom-code.sh
+kubectl apply -f bookinfo-custom-images.yaml
 ```
 
 ## Generate load
@@ -45,14 +48,14 @@ The source code of each microservices is available in `~/channel-kickstarter/boo
 To deploy custom code, run the following commands:
 
 ```bash
-cd ~/channel-kickstarter/bookinfo
+cd ~/channel-kickstarter
 export HUB="us-docker.pkg.dev/public-field-eng-grafana/${LOGNAME:0:6}-cr"
 export TAG=$LOGNAME
 BOOKINFO_TAG=$TAG BOOKINFO_HUB=$HUB ./build-custom-code.sh
 kubectl apply -f bookinfo-custom-images.yaml
 ```
 
-> The `build-custom-code.sh` generates a copy of `bookinfo/platform/kube/bookinfo.yaml` and changes the images. If you have modified the manifest, your changes will be reflected in the new `bookinfo-custom-images.yaml`. If you have edited your deployments manually, those changes will be lost.
+> The `build-custom-code.sh` generates a copy of `bookinfo.yaml` and changes the images. If you have modified the manifest, your changes will be reflected in the new `bookinfo-custom-images.yaml`. If you have edited your deployments manually, those changes will be lost.
 
 It will compile all microservices, build the image, push it to registry, generate and deploy a new Kubernetes manifest using these images.
 
