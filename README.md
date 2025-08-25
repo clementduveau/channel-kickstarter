@@ -45,18 +45,14 @@ kubectl apply -f loadgen.yml
 
 The source code of each microservices is available in `~/channel-kickstarter/bookinfo/src/`
 
-To deploy custom code, run the following commands:
+To deploy custom code, run the `build-custom-code.sh` command again
+
+> The `build-custom-code.sh` generates a copy of `bookinfo.yaml` and changes the images, your other changes on `bookinfo-custom-images.yaml` **will be lost !**
 
 ```bash
 cd ~/channel-kickstarter
-export HUB="us-docker.pkg.dev/public-field-eng-grafana/${LOGNAME:0:6}-cr"
-export TAG=$LOGNAME
 BOOKINFO_TAG=$TAG BOOKINFO_HUB=$HUB ./build-custom-code.sh
 kubectl apply -f bookinfo-custom-images.yaml
 ```
 
-> The `build-custom-code.sh` generates a copy of `bookinfo.yaml` and changes the images. If you have modified the manifest, your changes will be reflected in the new `bookinfo-custom-images.yaml`. If you have edited your deployments manually, those changes will be lost.
-
 It will compile all microservices, build the image, push it to registry, generate and deploy a new Kubernetes manifest using these images.
-
-The initial build can take up to 5 minutes. After that, builds are incremental.
