@@ -16,7 +16,6 @@ BookInfo got you a dev environment to run your tests. Deploy the app by running 
 
 ```bash
 git clone https://github.com/clementduveau/channel-kickstarter.git
-git branch testing
 cd channel-kickstarter
 export HUB="us-docker.pkg.dev/public-field-eng-grafana/${LOGNAME:0:6}-cr"
 export TAG=$LOGNAME
